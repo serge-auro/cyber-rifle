@@ -12,7 +12,7 @@ The "shooting-gallery" project is a simple shooting game where the user can shoo
 - pygame
 
 ### Credits
-- Developed by [Serge-Auro] (https://github.com/serge-auro)
+- Developed by [Serge-Auro](https://github.com/serge-auro)
 
 ### License
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
