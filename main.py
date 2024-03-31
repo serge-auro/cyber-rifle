@@ -51,11 +51,15 @@ change_target_xy()
 # Загрузка изображения фона
 bg_image = pygame.image.load('image/bg_0.jpg')
 # Установка шрифта для счетчика очков
-font = pygame.font.Font(None, 36)
+
+
+font = pygame.font.Font(None, 28)
 score = 0
-
-
 running = True
+clock = pygame.time.Clock()
+start_time = pygame.time.get_ticks()
+target_timer = 0
+
 while running:
     # Отображение фоновой картинки
     screen.blit(bg_image, (0, 0))
@@ -65,34 +69,31 @@ while running:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            if target_x < mouse_x < target_x + target_width and target_y < mouse_y < target_y + target_height:
-                pygame.mouse.set_visible(False)
+            pygame.mouse.set_visible(False)
+            score += calculate_points(mouse_x-target_x, mouse_y-target_y)
+            pygame.display.set_caption(f'Score: {score} x:{target_x} y:{target_y}')
+            pygame.mouse.set_visible(True)
+            change_target_xy()
+            start_time = pygame.time.get_ticks()
+            screen.blit(target_image, (target_x, target_y))
 
-                score += calculate_points(mouse_x-target_x, mouse_y-target_y)
-                print(f"Стало {score} очков")
 
-                pygame.time.Clock().tick(60)
-                pygame.display.set_caption(f'Score: {score} x:{target_x} y:{target_y}')
-                pygame.mouse.set_visible(True)
-                change_target_xy()
-                screen.blit(target_image, (target_x, target_y))
-            else:
-                pygame.mouse.set_visible(False)
+    target_timer = pygame.time.get_ticks() - start_time
 
-                score += calculate_points(mouse_x-target_x, mouse_y-target_y)
+    if target_timer < 3000:
+        screen.blit(target_image, (target_x, target_y))
+    else:
+        change_target_xy()
+        start_time = pygame.time.get_ticks()
 
-                pygame.time.Clock().tick(60)
-                pygame.display.set_caption(f'Score: {score} x:{target_x} y:{target_y}')
-                pygame.mouse.set_visible(True)
-                change_target_xy()
-                screen.blit(target_image, (target_x, target_y))
+    text_score = font.render("Score: " + str(score), True, (255, 255, 255))
+    screen.blit(text_score, (10, 10))
 
-    screen.blit(target_image, (target_x, target_y))
-    # Отображение счетчика очков
-    text = font.render("Score: " + str(score), True, (255, 255, 255))
-    screen.blit(text, (10, 10))
+    text_time = font.render(" time left: " + "{:.2f}".format(3 - target_timer/1000), True, (255, 255, 255))
+    screen.blit(text_time, (600, 10))
 
     pygame.display.update()
+    clock.tick(100)
 
 
 pygame.quite()
