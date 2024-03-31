@@ -8,6 +8,7 @@ target_y = 0
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 def change_target_xy():
+    global target_x , target_y
     target_x = random.randrange(0, SCREEN_WIDTH - target_width)
     target_y = random.randrange(0, SCREEN_HEIGHT - target_height)
 
@@ -44,7 +45,6 @@ while running:
             if target_x < mouse_x < target_x + target_width and target_y < mouse_y < target_y + target_height:
                 pygame.mouse.set_visible(False)
                 score += 100
-                pygame.display.update()
                 pygame.time.Clock().tick(60)
                 pygame.display.set_caption(f'Score: {score} x:{target_x} y:{target_y}')
                 pygame.mouse.set_visible(True)
@@ -53,7 +53,6 @@ while running:
             else:
                 pygame.mouse.set_visible(False)
                 score -= 50
-                pygame.display.update()
                 pygame.time.Clock().tick(60)
                 pygame.display.set_caption(f'Score: {score} x:{target_x} y:{target_y}')
                 pygame.mouse.set_visible(True)
