@@ -9,8 +9,31 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 def change_target_xy():
     global target_x , target_y
+    global SCREEN_WIDTH, SCREEN_HEIGHT
+    global target_x, target_y
     target_x = random.randrange(0, SCREEN_WIDTH - target_width)
     target_y = random.randrange(0, SCREEN_HEIGHT - target_height)
+
+def calculate_points(click_x, click_y):
+    # Размеры эллипсов и их координаты
+    ellipses = [
+        {"x": 23, "y": 46, "width": 4, "height": 5, "points": 500},
+        {"x": 19, "y": 42, "width": 10, "height": 12, "points": 300},
+        {"x": 16, "y": 38, "width": 17, "height": 20, "points": 200},
+        {"x": 12, "y": 33, "width": 26, "height": 29, "points": 100},
+        {"x": 0, "y": 0, "width": 51, "height": 100, "points": 50}
+    ]
+
+    # Проверяем, попал ли клик в какой-либо из эллипсов
+    for ellipse in ellipses:
+        dx = (click_x - (ellipse["x"] + ellipse["width"] / 2)) / (ellipse["width"] / 2)
+        dy = (click_y - (ellipse["y"] + ellipse["height"] / 2)) / (ellipse["height"] / 2)
+        if dx**2 + dy**2 <= 1:
+            return ellipse["points"]
+
+    # Если не попал ни в один эллипс, начисляем -50 очков
+    return -50
+
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
@@ -44,7 +67,10 @@ while running:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             if target_x < mouse_x < target_x + target_width and target_y < mouse_y < target_y + target_height:
                 pygame.mouse.set_visible(False)
-                score += 100
+
+                score += calculate_points(mouse_x-target_x, mouse_y-target_y)
+                print(f"Стало {score} очков")
+
                 pygame.time.Clock().tick(60)
                 pygame.display.set_caption(f'Score: {score} x:{target_x} y:{target_y}')
                 pygame.mouse.set_visible(True)
@@ -52,7 +78,9 @@ while running:
                 screen.blit(target_image, (target_x, target_y))
             else:
                 pygame.mouse.set_visible(False)
-                score -= 50
+
+                score += calculate_points(mouse_x-target_x, mouse_y-target_y)
+
                 pygame.time.Clock().tick(60)
                 pygame.display.set_caption(f'Score: {score} x:{target_x} y:{target_y}')
                 pygame.mouse.set_visible(True)
