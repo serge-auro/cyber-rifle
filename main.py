@@ -93,7 +93,7 @@ while running:
     screen.blit(text_time, (600, 10))
 
     pygame.display.update()
-    clock.tick(100)
+    clock.tick(300)
 
 
 pygame.quite()
